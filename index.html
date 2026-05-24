@@ -340,28 +340,50 @@
       color:var(--text-light); text-transform:uppercase; margin-bottom:0.3rem;
     }
 
-    /* ---- 4. PHOTO GALLERY CAROUSEL ---- */
-    .swiper { width: 100%; padding-top: 50px; padding-bottom: 50px; }
-    .swiper-slide {
-      background-position: center; background-size: cover;
-      width: 280px; height: 380px;
-      background: #fff; padding: 1rem 1rem 3.5rem 1rem;
-      box-shadow: 0 15px 45px rgba(0,0,0,0.15);
-      border-radius: 4px; transition: transform 0.4s;
+    /* ---- 4. PHOTO GALLERY HORIZONTAL SCROLL ---- */
+    .polaroid-gallery {
+      display: flex;
+      gap: 2.2rem;
+      overflow-x: auto;
+      padding: 3rem 2rem 4rem 2rem;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none; /* Hide scrollbar in Firefox */
+      -ms-overflow-style: none; /* Hide scrollbar in IE */
     }
-    .swiper-slide-img-wrap { width: 100%; height: 260px; overflow: hidden; border-radius: 2px; }
-    .swiper-slide img { display: block; width: 100%; height: 100%; object-fit: cover; }
-    .swiper-slide-caption {
-      font-family:'Dancing Script',cursive; font-size:1.3rem;
-      text-align:center; color:var(--text); margin-top:1rem;
+    .polaroid-gallery::-webkit-scrollbar {
+      display: none; /* Hide scrollbar in Chrome/Safari */
     }
-    .polaroid-tilt-1 { transform: rotate(-3deg); }
-    .polaroid-tilt-2 { transform: rotate(2deg); }
-    .polaroid-tilt-3 { transform: rotate(-1.5deg); }
-    .polaroid-tilt-4 { transform: rotate(3.5deg); }
-    
+    .polaroid-card {
+      flex: 0 0 280px;
+      scroll-snap-align: center;
+      background: #fff;
+      padding: 1.2rem 1.2rem 2.8rem 1.2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.02);
+      border-radius: 4px;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(80px) rotate(-6deg) scale(0.9);
+      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+    }
+    .polaroid-card.visible {
+      opacity: 1;
+      transform: translateY(0) rotate(var(--tilt)) scale(1);
+    }
+    .polaroid-card:hover {
+      transform: translateY(-12px) scale(1.05) rotate(0deg) !important;
+      box-shadow: 0 25px 45px rgba(194,24,91,0.12);
+      z-index: 10;
+    }
+    .polaroid-img-wrap { width: 100%; height: 260px; overflow: hidden; border-radius: 2px; background: #fafafa; }
+    .polaroid-img-wrap img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+    .polaroid-card:hover .polaroid-img-wrap img { transform: scale(1.06); }
+    .polaroid-caption {
+      font-family:'Dancing Script',cursive; font-size:1.35rem;
+      text-align:center; color:var(--text); margin-top:1.1rem;
+    }
+
     /* ---- 5. CAKE & CANDLE (MAIN SCENE) ---- */
-    .cake-section { text-align:center; background:#fff8f9; }
+    .cake-section { text-align:center; background:transparent; }
     .cake-canvas-wrap {
       position:relative; width:300px; height:320px; margin:0 auto 2.5rem;
     }
@@ -403,7 +425,7 @@
     }
     
     /* ---- 6. WISHES WALL ---- */
-    .wishes-wall { background:var(--cream); }
+    .wishes-wall { background:transparent; }
     .wishes-grid {
       column-count: 3; column-gap: 1.5rem; max-width: 1000px; margin: 0 auto;
     }
@@ -411,11 +433,20 @@
     @media(max-width:480px){ .wishes-grid { column-count: 1; } }
     
     .wish-wall-card {
-      background: #fff; border-radius: 18px; padding: 2rem;
+      background: rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 20px; padding: 2rem;
       margin-bottom: 1.5rem; display: inline-block; width: 100%;
-      border: 1px solid rgba(194,24,91,0.06);
-      box-shadow: 0 10px 30px rgba(194,24,91,0.03);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: 0 10px 30px rgba(194,24,91,0.02);
       perspective: 1000px; cursor:pointer;
+      transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+    }
+    .wish-wall-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(194,24,91,0.25);
+      box-shadow: 0 15px 35px rgba(194,24,91,0.06);
     }
     .wish-wall-card-inner {
       position: relative; width: 100%; transition: transform 0.6s;
@@ -488,9 +519,60 @@
     }
     #lightbox.open { display:flex; }
     #lightbox.open img { transform: scale(1); }
+
+    /* ---- AMBIENT BACKGROUND GLOW ---- */
+    .ambient-glow {
+      position: fixed; inset: 0; z-index: -2; pointer-events: none; overflow: hidden;
+      background: #FFF8F0;
+    }
+    .orb {
+      position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.28;
+      mix-blend-mode: multiply; animation: floatOrb 25s infinite alternate ease-in-out;
+    }
+    .orb-1 {
+      top: -10%; left: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, var(--blush) 0%, transparent 80%);
+      animation-duration: 22s;
+    }
+    .orb-2 {
+      bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: radial-gradient(circle, var(--lavender) 0%, transparent 80%);
+      animation-duration: 28s; animation-delay: -5s;
+    }
+    .orb-3 {
+      top: 40%; right: -10%; width: 45vw; height: 45vw; background: radial-gradient(circle, rgba(248,187,217,0.4) 0%, transparent 80%);
+      animation-duration: 25s; animation-delay: -10s;
+    }
+    .orb-4 {
+      bottom: 30%; left: -5%; width: 55vw; height: 55vw; background: radial-gradient(circle, rgba(212,175,55,0.18) 0%, transparent 80%);
+      animation-duration: 32s; animation-delay: -7s;
+    }
+    @keyframes floatOrb {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(4vw, 5vh) scale(1.1); }
+      100% { transform: translate(-2vw, -3vh) scale(0.9); }
+    }
+
+    /* ---- FLOATING ROMANTIC PARTICLES ---- */
+    .floating-particle {
+      position: fixed; pointer-events: none; z-index: 999;
+      opacity: 0; animation: floatUp linear forwards;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) translateX(0) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.65; }
+      90% { opacity: 0.65; }
+      100% { transform: translateY(-10vh) translateX(var(--drift)) rotate(var(--rotation)); opacity: 0; }
+    }
   </style>
 </head>
 <body>
+
+  <!-- Ambient background orbs -->
+  <div class="ambient-glow">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+  </div>
 
   <!-- LIGHTBOX -->
   <div id="lightbox" onclick="closeLightbox()">
@@ -589,15 +671,13 @@
     </section>
 
     <!-- 4. PHOTO GALLERY -->
-    <section class="section" id="sec-gallery">
+    <section class="section" id="sec-gallery" style="max-width: 100vw; overflow: hidden; padding-left: 0; padding-right: 0;">
       <p class="section-tag reveal">Our Story</p>
-      <h2 class="section-title reveal">Potret Indah <em>Kita</em> 🎞</h2>
+      <h2 class="section-title reveal" style="padding: 0 1.5rem;">Potret Indah <em>Kita</em> 🎞</h2>
       
-      <!-- Swiper Slider -->
-      <div class="swiper reveal">
-        <div class="swiper-wrapper" id="polaroid-wrapper">
-          <!-- Polaroid files populated dynamically -->
-        </div>
+      <!-- Horizontal Polaroid List -->
+      <div class="polaroid-gallery reveal" id="polaroid-list-container">
+        <!-- Polaroid files populated dynamically -->
       </div>
     </section>
 
@@ -804,7 +884,7 @@ Joefany ❤️`,
     });
 
     // Polaroid photos populated dynamically
-    const polaroidWrapper = document.getElementById('polaroid-wrapper');
+    const polaroidContainer = document.getElementById('polaroid-list-container');
     const polaroidList = [
       { img: 'assets/img/image_2.jpg', date: 'Momen 1 🌷', cap: 'Kebersamaan Indah' },
       { img: 'assets/img/image_3.jpg', date: 'Momen 2 ✨', cap: 'Tawa & Bahagia' },
@@ -813,18 +893,24 @@ Joefany ❤️`,
       { img: 'assets/img/image_6.jpg', date: 'Momen 5 🌷', cap: 'Kisah Terindah' },
       { img: 'assets/img/image_7.jpg', date: 'Momen 6 🌟', cap: 'Selamanya Berdua' },
     ];
+    
+    // Define randomized custom tilts for each polaroid
+    const tilts = [-3, 2, -2, 3, -1, 2];
+    
     polaroidList.forEach((p, idx) => {
-      const slide = document.createElement('div');
-      slide.className = `swiper-slide polaroid-tilt-${(idx % 4) + 1}`;
-      slide.setAttribute('onclick', 'openLightbox(this)');
-      slide.innerHTML = `
-        <div class="swiper-slide-img-wrap">
+      const card = document.createElement('div');
+      card.className = 'polaroid-card';
+      const tiltAngle = tilts[idx % tilts.length];
+      card.style.setProperty('--tilt', `${tiltAngle}deg`);
+      card.setAttribute('onclick', 'openLightbox(this)');
+      card.innerHTML = `
+        <div class="polaroid-img-wrap">
           <img src="${p.img}" alt="${p.cap}"/>
         </div>
-        <p class="swiper-slide-caption">${p.cap}</p>
-        <span style="font-size:0.6rem;color:var(--text-light);display:block;text-align:center;letter-spacing:0.2em;text-transform:uppercase;margin-top:0.3rem;">${p.date}</span>
+        <p class="polaroid-caption">${p.cap}</p>
+        <span style="font-size:0.6rem;color:var(--text-light);display:block;text-align:center;letter-spacing:0.2em;text-transform:uppercase;margin-top:0.35rem;">${p.date}</span>
       `;
-      polaroidWrapper.appendChild(slide);
+      polaroidContainer.appendChild(card);
     });
 
     // Apply photos dynamically
@@ -936,6 +1022,9 @@ Joefany ❤️`,
       // Start GSAP ScrollTriggers
       initScrollTriggers();
 
+      // Start beautiful background floating heart/flower particles
+      initFloatingParticles();
+
       // Autoplay track 1 lofi with initial volume crossfade to 0.4
       activeTrack = track1;
       track1.play();
@@ -972,20 +1061,58 @@ Joefany ❤️`,
               // Trigger age count-up milestone
               animateAgeCounter();
             }
+            if (e.target.id === 'polaroid-list-container') {
+              // Trigger staggered polaroid cards entrance!
+              revealPolaroids();
+            }
           }
         });
       }, { threshold: 0.1 });
       revealItems.forEach(item => obs.observe(item));
+    }
 
-      // Swiper layout engine initialization
-      new Swiper('.swiper', {
-        effect: 'cards',
-        grabCursor: true,
-        cardsEffect: {
-          rotate: true,
-          slideShadows: false
-        }
+    let polaroidsRevealed = false;
+    function revealPolaroids() {
+      if (polaroidsRevealed) return;
+      polaroidsRevealed = true;
+      const cards = document.querySelectorAll('.polaroid-card');
+      cards.forEach((card, idx) => {
+        setTimeout(() => {
+          card.classList.add('visible');
+        }, idx * 280); // 280ms stagger delay!
       });
+    }
+
+    function initFloatingParticles() {
+      const container = document.body;
+      const symbols = ['🌸', '❤️', '✨', '💕', '🌷'];
+      
+      setInterval(() => {
+        if (document.hidden || document.getElementById('main-site').style.display !== 'block') return;
+        
+        const particle = document.createElement('div');
+        particle.className = 'floating-particle';
+        particle.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        
+        particle.style.left = `${Math.random() * 100}vw`;
+        
+        const size = Math.random() * 1.5 + 0.8;
+        particle.style.fontSize = `${size}rem`;
+        
+        const duration = 12 + Math.random() * 10;
+        const drift = (Math.random() * 200 - 100);
+        const rotation = (Math.random() * 360);
+        
+        particle.style.setProperty('--drift', `${drift}px`);
+        particle.style.setProperty('--rotation', `${rotation}deg`);
+        particle.style.animationDuration = `${duration}s`;
+        
+        container.appendChild(particle);
+        
+        setTimeout(() => {
+          particle.remove();
+        }, duration * 1000);
+      }, 2500);
     }
 
     // Dynamic numerical milestone countup animation
