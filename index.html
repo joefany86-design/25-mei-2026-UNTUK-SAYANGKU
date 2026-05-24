@@ -1304,7 +1304,7 @@
       <p class="section-tag reveal">A Year Older</p>
       <h2 class="section-title reveal">Tahun yang Indah untuk Perempuan <em>Terindah</em> 🌟</h2>
 
-      <div class="counter-container reveal">
+      <div class="counter-container reveal" id="milestone-counter-container">
         <span class="counter-number" id="milestone-age-val">0</span>
         <p class="counter-label" id="milestone-age-label">Tahun Usia Keindahanmu</p>
       </div>
@@ -1728,7 +1728,7 @@ Joefany ❤️`,
         entries.forEach(e => {
           if (e.isIntersecting) {
             e.target.classList.add('visible');
-            if (e.target.id === 'sec-milestone') {
+            if (e.target.id === 'milestone-counter-container') {
               // Trigger age count-up milestone
               animateAgeCounter();
             }
