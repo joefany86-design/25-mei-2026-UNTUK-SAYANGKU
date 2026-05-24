@@ -1219,6 +1219,138 @@
         opacity: 0;
       }
     }
+
+    /* ---- SHOOTING STARS on Lock Screen ---- */
+    .shooting-star {
+      position: absolute; z-index: 1; pointer-events: none;
+      width: 120px; height: 1px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.9), transparent);
+      border-radius: 50px;
+      animation: shootStar linear forwards;
+    }
+    @keyframes shootStar {
+      0% { transform: translateX(0) translateY(0) rotate(-35deg); opacity: 1; }
+      100% { transform: translateX(80vw) translateY(45vh) rotate(-35deg); opacity: 0; }
+    }
+
+    /* ---- SAKURA PETALS ---- */
+    .sakura-petal {
+      position: fixed; pointer-events: none; z-index: 998;
+      width: 12px; height: 12px;
+      background: radial-gradient(ellipse, #ffb7c5 30%, #ff8fa3 70%, transparent 100%);
+      border-radius: 50% 0 50% 50%;
+      opacity: 0; animation: sakuraFall linear forwards;
+    }
+    @keyframes sakuraFall {
+      0% { transform: translateY(-5vh) rotate(0deg) translateX(0); opacity: 0; }
+      8% { opacity: 0.7; }
+      85% { opacity: 0.7; }
+      100% { transform: translateY(105vh) rotate(var(--sakura-rot)) translateX(var(--sakura-drift)); opacity: 0; }
+    }
+
+    /* ---- TYPEWRITER for Hero Name ---- */
+    .hero-name .typewriter-cursor {
+      display: inline-block;
+      width: 3px; height: 0.85em;
+      background: var(--blush);
+      margin-left: 4px;
+      animation: blinkCursor 0.7s steps(1) infinite;
+      vertical-align: baseline;
+    }
+    @keyframes blinkCursor {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* ---- ENVELOPE Letter Animation ---- */
+    .envelope-wrap {
+      perspective: 1200px;
+      max-width: 680px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .envelope-flap {
+      width: 100%; height: 120px;
+      background: linear-gradient(135deg, #2b0c26, #3d1038);
+      clip-path: polygon(0 0, 50% 100%, 100% 0);
+      transform-origin: top center;
+      transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+      position: absolute; top: 0; left: 0; z-index: 3;
+      border-radius: 4px 4px 0 0;
+    }
+    .envelope-wrap.opened .envelope-flap {
+      transform: rotateX(180deg);
+    }
+    .envelope-body {
+      background: linear-gradient(135deg, #200424, #150418);
+      border-radius: 0 0 12px 12px;
+      padding-top: 60px;
+      min-height: 60px;
+      position: relative; z-index: 2;
+    }
+    .letter-card-envelope {
+      transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1) 0.4s;
+      transform: translateY(0);
+      position: relative; z-index: 4;
+    }
+    .envelope-wrap.opened .letter-card-envelope {
+      transform: translateY(-80px);
+    }
+
+    /* ---- EASTER EGG ---- */
+    .easter-egg-toast {
+      position: fixed; bottom: 3rem; left: 50%; transform: translateX(-50%) translateY(100px);
+      background: rgba(26,5,51,0.92); backdrop-filter: blur(16px);
+      color: white; padding: 1.2rem 2.5rem; border-radius: 50px;
+      font-family: 'Dancing Script', cursive; font-size: 1.2rem;
+      box-shadow: 0 15px 40px rgba(194,24,91,0.3);
+      border: 1px solid rgba(248,187,217,0.25);
+      z-index: 10001; opacity: 0;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
+      pointer-events: none; text-align: center;
+    }
+    .easter-egg-toast.show {
+      transform: translateX(-50%) translateY(0); opacity: 1;
+    }
+
+    /* ---- SLIDESHOW OVERLAY ---- */
+    .slideshow-overlay {
+      position: fixed; inset: 0; z-index: 9998;
+      background: rgba(0,0,0,0.92); backdrop-filter: blur(8px);
+      display: none; align-items: center; justify-content: center;
+      flex-direction: column;
+    }
+    .slideshow-overlay.active { display: flex; }
+    .slideshow-img {
+      max-width: 85vw; max-height: 70vh;
+      object-fit: contain; border-radius: 8px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      transition: opacity 0.8s ease;
+    }
+    .slideshow-caption {
+      font-family: 'Dancing Script', cursive;
+      color: rgba(255,255,255,0.8); font-size: 1.4rem;
+      margin-top: 1.5rem; text-align: center;
+    }
+    .slideshow-close {
+      position: absolute; top: 2rem; right: 2rem;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      color: white; width: 44px; height: 44px; border-radius: 50%;
+      cursor: pointer; font-size: 1.2rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.3s;
+    }
+    .slideshow-close:hover { background: rgba(255,255,255,0.2); }
+    .slideshow-controls {
+      display: flex; gap: 1rem; margin-top: 1.5rem;
+    }
+    .slideshow-btn {
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      color: white; padding: 0.6rem 1.8rem; border-radius: 50px;
+      cursor: pointer; font-size: 0.85rem; letter-spacing: 0.1em;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .slideshow-btn:hover { background: rgba(255,255,255,0.18); transform: translateY(-2px); }
   </style>
 </head>
 
@@ -1286,10 +1418,10 @@
       <div class="hero-bg-photo" id="hero-background-img"></div>
       <div class="hero-overlay"></div>
       <div class="hero-content">
-        <p class="hero-eyebrow">The Grand Opening</p>
-        <h1 class="hero-name" id="hero-recipient-name">Gamalia</h1>
-        <p class="hero-title" id="hero-typer-sub">Happy Birthday, Sayang 🎂</p>
-        <button class="cta-btn" onclick="scrollToSection('sec-milestone')">Buka Kado ❤️</button>
+        <p class="hero-eyebrow" data-parallax="0.3">The Grand Opening</p>
+        <h1 class="hero-name" id="hero-recipient-name"></h1>
+        <p class="hero-title" id="hero-typer-sub" data-parallax="0.15"></p>
+        <button class="cta-btn" onclick="scrollToSection('sec-milestone')" data-parallax="0.1">Buka Kado ❤️</button>
       </div>
       <div class="hero-scroll" onclick="scrollToSection('sec-milestone')">
         <span>Scroll</span>
@@ -1298,6 +1430,21 @@
         </svg>
       </div>
     </section>
+
+    <!-- SLIDESHOW OVERLAY -->
+    <div class="slideshow-overlay" id="slideshow-overlay">
+      <button class="slideshow-close" onclick="closeSlideshow()">&times;</button>
+      <img class="slideshow-img" id="slideshow-img" src="" alt="Slideshow"/>
+      <p class="slideshow-caption" id="slideshow-caption"></p>
+      <div class="slideshow-controls">
+        <button class="slideshow-btn" onclick="slideshowPrev()">◀ Sebelumnya</button>
+        <button class="slideshow-btn" id="slideshow-auto-btn" onclick="toggleAutoSlideshow()">▶ Auto</button>
+        <button class="slideshow-btn" onclick="slideshowNext()">Selanjutnya ▶</button>
+      </div>
+    </div>
+
+    <!-- EASTER EGG TOAST -->
+    <div class="easter-egg-toast" id="easter-egg-toast"></div>
 
     <!-- 2. MILESTONE & TIMELINE -->
     <section class="section" id="sec-milestone">
@@ -1314,19 +1461,23 @@
       </div>
     </section>
 
-    <!-- 3. LOVE LETTER -->
+    <!-- 3. LOVE LETTER with ENVELOPE -->
     <section class="letter-section" id="sec-letter">
       <div class="section-tag reveal" style="color:rgba(248,187,217,0.75);">Words from the Heart</div>
       <h2 class="section-title reveal" style="color:#fff;">Surat Cinta <em>Untukmu</em> 💌</h2>
-      <div class="letter-container">
-        <div class="letter-card reveal" id="love-letter-card">
-          <div class="letter-ornament">&middot; &middot; &middot; &hearts; &middot; &middot; &middot;</div>
-          <p class="letter-text" id="love-letter-paragraph">
-            <!-- Dynamic cursive letter loaded via JS -->
-          </p>
-          <div class="letter-sig">
-            <small>Dengan seluruh cintaku,</small>
-            <span id="love-letter-signature">Joefany &hearts;</span>
+      <div class="envelope-wrap reveal" id="envelope-container">
+        <div class="envelope-flap"></div>
+        <div class="envelope-body"></div>
+        <div class="letter-card-envelope">
+          <div class="letter-card" id="love-letter-card" style="transform: none;">
+            <div class="letter-ornament">&middot; &middot; &middot; &hearts; &middot; &middot; &middot;</div>
+            <p class="letter-text" id="love-letter-paragraph">
+              <!-- Dynamic cursive letter loaded via JS -->
+            </p>
+            <div class="letter-sig">
+              <small>Dengan seluruh cintaku,</small>
+              <span id="love-letter-signature">Joefany &hearts;</span>
+            </div>
           </div>
         </div>
       </div>
@@ -1502,7 +1653,7 @@ Joefany ❤️`,
 
     // Apply values to HTML elements dynamically
     document.getElementById('lock-recipient-name').textContent = appData.recipientName;
-    document.getElementById('hero-recipient-name').textContent = appData.recipientName;
+    // hero-recipient-name will be set by typewriter effect later
     document.getElementById('love-letter-signature').textContent = `${appData.senderName} 💖`;
     document.getElementById('closing-signature-val').textContent = `— ${appData.senderName}, dengan sepenuh hati ❤️`;
     document.getElementById('lock-footer-label').textContent = `dari ${appData.senderName} · dengan sepenuh cinta`;
@@ -1695,6 +1846,27 @@ Joefany ❤️`,
       }
     })();
 
+    // ======== FEATURE 1: SHOOTING STARS on Lock Screen ========
+    (function initShootingStars() {
+      const lockStars = document.getElementById('lock-stars');
+      function spawnShootingStar() {
+        if (document.getElementById('locked-screen').style.display === 'none') return;
+        const star = document.createElement('div');
+        star.className = 'shooting-star';
+        star.style.top = `${Math.random() * 40}%`;
+        star.style.left = `${-5 + Math.random() * 20}%`;
+        const dur = 1.2 + Math.random() * 1.5;
+        star.style.animationDuration = `${dur}s`;
+        star.style.width = `${80 + Math.random() * 100}px`;
+        lockStars.appendChild(star);
+        setTimeout(() => star.remove(), dur * 1000 + 100);
+      }
+      setInterval(spawnShootingStar, 2500 + Math.random() * 3000);
+      // Spawn a few immediately
+      setTimeout(spawnShootingStar, 500);
+      setTimeout(spawnShootingStar, 1800);
+    })();
+
     // Show Unlock screen overlay transition
     function showUnlock() {
       const lockScreen = document.getElementById('locked-screen');
@@ -1722,6 +1894,18 @@ Joefany ❤️`,
 
       // Start beautiful background floating heart/flower particles
       initFloatingParticles();
+
+      // FEATURE 2: Typewriter effect for hero name
+      initTypewriter();
+
+      // FEATURE 3: Sakura petals rain
+      initSakuraPetals();
+
+      // FEATURE 4: Parallax scroll
+      initParallaxScroll();
+
+      // FEATURE 8: Easter Egg hidden messages
+      initEasterEggs();
 
       // Autoplay track 1 lofi with initial volume crossfade to 0.4
       activeTrack = track1;
@@ -1765,6 +1949,12 @@ Joefany ❤️`,
             if (e.target.id === 'polaroid-list-container') {
               // Trigger staggered polaroid cards entrance!
               revealPolaroids();
+            }
+            // FEATURE 5: Envelope letter open animation
+            if (e.target.id === 'envelope-container') {
+              setTimeout(() => {
+                e.target.classList.add('opened');
+              }, 600);
             }
           }
         });
@@ -1839,22 +2029,6 @@ Joefany ❤️`,
     function flipCard(el) {
       el.classList.toggle('flipped');
     }
-
-    // Lightbox Modal controllers
-    function openLightbox(el) {
-      const img = el.querySelector('img');
-      document.getElementById('lightbox-img').src = img.src;
-      document.getElementById('lightbox').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeLightbox() {
-
-      document.getElementById('lightbox').classList.remove('open');
-      document.body.style.overflow = '';
-    }
-
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
     // ======== 6. INTERACTIVE CANDLE BLOW (WEB AUDIO API SENSOR & FALLBACK) ========
     let candlesExtinguished = 0;
@@ -1965,7 +2139,7 @@ Joefany ❤️`,
       }
     }
 
-    // Birthday victory state controller
+    // Birthday victory state controller — FEATURE 6: Enhanced Mega Fireworks
     function triggerVictory() {
       // Clear audio context streams
       if (sensorInterval) clearInterval(sensorInterval);
@@ -1983,27 +2157,259 @@ Joefany ❤️`,
       track1.fade(track1.volume(), 0, 2000);
       setTimeout(() => track1.stop(), 2000);
 
-      // Launch full canvas screen celebratory fireworks
-      let duration = 5 * 1000;
+      // MEGA FIREWORKS — 3 waves, multi-color, multi-origin
+      const colors = [['#C2185B', '#F8BBD9', '#D4AF37'], ['#E040FB', '#7C4DFF', '#FFD54F'], ['#FF6F00', '#FF1744', '#F50057']];
+      let duration = 8 * 1000;
       let animationEnd = Date.now() + duration;
-      let defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 11000 };
 
       function randomInRange(min, max) {
         return Math.random() * (max - min) + min;
       }
 
+      // Wave 1: Center explosion
+      confetti({ particleCount: 120, spread: 100, origin: { x: 0.5, y: 0.5 }, colors: colors[0], zIndex: 11000, startVelocity: 45 });
+
+      // Wave 2-3: Continuous multi-point fireworks
       let interval = setInterval(function () {
         let timeLeft = animationEnd - Date.now();
+        if (timeLeft <= 0) return clearInterval(interval);
 
-        if (timeLeft <= 0) {
-          return clearInterval(interval);
+        let particleCount = 70 * (timeLeft / duration);
+        let colorSet = colors[Math.floor(Math.random() * colors.length)];
+
+        // Left burst
+        confetti({ particleCount, spread: 120, origin: { x: randomInRange(0.05, 0.35), y: randomInRange(0.1, 0.7) }, colors: colorSet, zIndex: 11000, startVelocity: 35, ticks: 80 });
+        // Right burst
+        confetti({ particleCount, spread: 120, origin: { x: randomInRange(0.65, 0.95), y: randomInRange(0.1, 0.7) }, colors: colorSet, zIndex: 11000, startVelocity: 35, ticks: 80 });
+        // Center sparkle
+        if (Math.random() > 0.4) {
+          confetti({ particleCount: 30, spread: 360, origin: { x: randomInRange(0.3, 0.7), y: randomInRange(0.2, 0.6) }, colors: ['#FFD700', '#FFF'], zIndex: 11000, startVelocity: 20, ticks: 50, scalar: 0.8, shapes: ['circle'] });
         }
+      }, 200);
 
-        let particleCount = 50 * (timeLeft / duration);
-        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-      }, 250);
+      // Show Easter Egg victory message
+      showEasterEggToast('🎆 Kembang api untukmu, sayang! Selamat ulang tahun ke-' + appData.age + '! 🎆');
     }
+
+    // ======== FEATURE 2: TYPEWRITER EFFECT ========
+    function initTypewriter() {
+      const nameEl = document.getElementById('hero-recipient-name');
+      const subEl = document.getElementById('hero-typer-sub');
+      const name = appData.recipientName || 'Gamalia';
+      const subtitle = 'Happy Birthday, Sayang 🎂';
+
+      nameEl.innerHTML = '<span class="typewriter-cursor"></span>';
+      subEl.textContent = '';
+
+      let i = 0;
+      function typeName() {
+        if (i < name.length) {
+          const cursor = nameEl.querySelector('.typewriter-cursor');
+          const textNode = document.createTextNode(name[i]);
+          nameEl.insertBefore(textNode, cursor);
+          i++;
+          setTimeout(typeName, 140 + Math.random() * 80);
+        } else {
+          // After name is typed, remove cursor then type subtitle
+          setTimeout(() => {
+            const cursor = nameEl.querySelector('.typewriter-cursor');
+            if (cursor) cursor.remove();
+            typeSubtitle();
+          }, 500);
+        }
+      }
+
+      let j = 0;
+      function typeSubtitle() {
+        if (j < subtitle.length) {
+          subEl.textContent += subtitle[j];
+          j++;
+          setTimeout(typeSubtitle, 50 + Math.random() * 30);
+        }
+      }
+
+      setTimeout(typeName, 600);
+    }
+
+    // ======== FEATURE 3: SAKURA PETALS RAIN ========
+    function initSakuraPetals() {
+      function spawnPetal() {
+        if (document.hidden || document.getElementById('main-site').style.display !== 'block') return;
+        const petal = document.createElement('div');
+        petal.className = 'sakura-petal';
+        petal.style.left = `${Math.random() * 100}vw`;
+        const size = 8 + Math.random() * 12;
+        petal.style.width = `${size}px`;
+        petal.style.height = `${size}px`;
+        const drift = (Math.random() * 150 - 75);
+        const rot = (Math.random() * 720 - 360);
+        petal.style.setProperty('--sakura-drift', `${drift}px`);
+        petal.style.setProperty('--sakura-rot', `${rot}deg`);
+        const dur = 8 + Math.random() * 8;
+        petal.style.animationDuration = `${dur}s`;
+        document.body.appendChild(petal);
+        setTimeout(() => petal.remove(), dur * 1000 + 200);
+      }
+      setInterval(spawnPetal, 800);
+      // Spawn initial burst
+      for (let k = 0; k < 8; k++) setTimeout(spawnPetal, k * 200);
+    }
+
+    // ======== FEATURE 4: PARALLAX SCROLL ========
+    function initParallaxScroll() {
+      const hero = document.getElementById('sec-hero');
+      const parallaxEls = hero.querySelectorAll('[data-parallax]');
+      const heroBg = document.getElementById('hero-background-img');
+
+      window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+        const heroH = hero.offsetHeight;
+        if (scrollY > heroH) return; // Only apply in hero viewport
+
+        // Background parallax (slower)
+        heroBg.style.transform = `scale(${1 + scrollY * 0.0003}) translateY(${scrollY * 0.25}px)`;
+
+        // Content elements parallax
+        parallaxEls.forEach(el => {
+          const speed = parseFloat(el.dataset.parallax) || 0.2;
+          el.style.transform = `translateY(${scrollY * speed}px)`;
+        });
+      }, { passive: true });
+    }
+
+    // ======== FEATURE 7: FULL-SCREEN SLIDESHOW ========
+    let slideshowIdx = 0;
+    let slideshowAutoInterval = null;
+    let slideshowImages = [];
+
+    function openSlideshow(startIdx) {
+      slideshowImages = polaroidList.map(p => ({ src: p.img, cap: p.cap }));
+      slideshowIdx = startIdx || 0;
+      updateSlideshowImage();
+      document.getElementById('slideshow-overlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSlideshow() {
+      document.getElementById('slideshow-overlay').classList.remove('active');
+      document.body.style.overflow = '';
+      if (slideshowAutoInterval) { clearInterval(slideshowAutoInterval); slideshowAutoInterval = null; }
+      document.getElementById('slideshow-auto-btn').textContent = '▶ Auto';
+    }
+
+    function updateSlideshowImage() {
+      const img = document.getElementById('slideshow-img');
+      const cap = document.getElementById('slideshow-caption');
+      img.style.opacity = '0';
+      setTimeout(() => {
+        img.src = slideshowImages[slideshowIdx].src;
+        cap.textContent = slideshowImages[slideshowIdx].cap;
+        img.style.opacity = '1';
+      }, 300);
+    }
+
+    function slideshowNext() {
+      slideshowIdx = (slideshowIdx + 1) % slideshowImages.length;
+      updateSlideshowImage();
+    }
+
+    function slideshowPrev() {
+      slideshowIdx = (slideshowIdx - 1 + slideshowImages.length) % slideshowImages.length;
+      updateSlideshowImage();
+    }
+
+    function toggleAutoSlideshow() {
+      const btn = document.getElementById('slideshow-auto-btn');
+      if (slideshowAutoInterval) {
+        clearInterval(slideshowAutoInterval);
+        slideshowAutoInterval = null;
+        btn.textContent = '▶ Auto';
+      } else {
+        slideshowAutoInterval = setInterval(slideshowNext, 3000);
+        btn.textContent = '⏸ Pause';
+      }
+    }
+
+    // Override lightbox to open slideshow instead
+    function openLightbox(el) {
+      const img = el.querySelector('img');
+      const idx = polaroidList.findIndex(p => img.src.includes(p.img));
+      openSlideshow(idx >= 0 ? idx : 0);
+    }
+
+    function closeLightbox() {
+      closeSlideshow();
+    }
+
+    // ======== FEATURE 8: EASTER EGG HIDDEN MESSAGES ========
+    const easterEggMessages = [
+      '💕 Aku mencintaimu lebih dari kata-kata bisa ungkapkan...',
+      '🌹 Kamu adalah alasan senyumku setiap hari, Gamalia',
+      '✨ Tahukah kamu? Setiap detik bersamamu adalah hadiah terbaik',
+      '🦋 "You are my today and all of my tomorrows" — Leo Christopher',
+      '💎 Kamu permata terindah yang pernah kutemukan',
+      '🌙 Bahkan bulan pun iri dengan sinarmu malam ini',
+      '🎵 Detak jantungku selalu bermelodi untukmu',
+      '🌸 Setiap kelopak sakura ini membawa doaku untukmu'
+    ];
+    let easterEggToastTimeout = null;
+    let easterEggFound = 0;
+
+    function showEasterEggToast(msg) {
+      const toast = document.getElementById('easter-egg-toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      if (easterEggToastTimeout) clearTimeout(easterEggToastTimeout);
+      easterEggToastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 4000);
+    }
+
+    function initEasterEggs() {
+      // Secret tap zones: hero eyebrow, closing heart, cake text, lock rose emoji areas
+      const secretTriggers = [
+        { selector: '.hero-eyebrow', taps: 3 },
+        { selector: '.closing-heart', taps: 5 },
+        { selector: '.letter-ornament', taps: 3 },
+        { selector: '.counter-number', taps: 7 },
+        { selector: '.section-tag', taps: 4 },
+        { selector: '.lock-rose', taps: 5 }
+      ];
+
+      secretTriggers.forEach(trigger => {
+        const els = document.querySelectorAll(trigger.selector);
+        els.forEach(el => {
+          let tapCount = 0;
+          let tapTimer = null;
+          el.style.cursor = 'default'; // Don't reveal it's clickable
+          el.addEventListener('click', (e) => {
+            tapCount++;
+            if (tapTimer) clearTimeout(tapTimer);
+            tapTimer = setTimeout(() => { tapCount = 0; }, 2000);
+
+            if (tapCount >= trigger.taps) {
+              tapCount = 0;
+              easterEggFound++;
+              const msg = easterEggMessages[easterEggFound % easterEggMessages.length];
+              showEasterEggToast(msg);
+              // Mini confetti reward
+              confetti({ particleCount: 40, spread: 60, origin: { x: 0.5, y: 0.7 }, colors: ['#F8BBD9', '#C2185B', '#D4AF37'], zIndex: 11000 });
+            }
+          });
+        });
+      });
+    }
+
+    // Keyboard shortcut for slideshow & easter egg
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        closeSlideshow();
+      }
+      if (document.getElementById('slideshow-overlay').classList.contains('active')) {
+        if (e.key === 'ArrowRight') slideshowNext();
+        if (e.key === 'ArrowLeft') slideshowPrev();
+      }
+    });
 
   </script>
 </body>
