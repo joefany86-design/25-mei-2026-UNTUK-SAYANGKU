@@ -1296,6 +1296,9 @@
     .envelope-wrap.opened .letter-card-envelope {
       transform: translateY(-80px);
     }
+    .envelope-wrap.opened .letter-card {
+      transform: rotateX(0deg) translateY(0);
+    }
 
     /* ---- EASTER EGG ---- */
     .easter-egg-toast {
@@ -1415,7 +1418,9 @@
 
     <!-- 1. HERO -->
     <section class="hero" id="sec-hero">
-      <div class="hero-bg-photo" id="hero-background-img"></div>
+      <div class="hero-bg-wrapper" style="position: absolute; inset: 0; overflow: hidden; z-index: 0;">
+        <div class="hero-bg-photo" id="hero-background-img"></div>
+      </div>
       <div class="hero-overlay"></div>
       <div class="hero-content">
         <p class="hero-eyebrow" data-parallax="0.3">The Grand Opening</p>
@@ -1469,7 +1474,7 @@
         <div class="envelope-flap"></div>
         <div class="envelope-body"></div>
         <div class="letter-card-envelope">
-          <div class="letter-card" id="love-letter-card" style="transform: none;">
+          <div class="letter-card" id="love-letter-card">
             <div class="letter-ornament">&middot; &middot; &middot; &hearts; &middot; &middot; &middot;</div>
             <p class="letter-text" id="love-letter-paragraph">
               <!-- Dynamic cursive letter loaded via JS -->
@@ -1642,10 +1647,14 @@ Joefany ❤️`,
       }
     };
 
-    // Load from LocalStorage if configuration exists, otherwise set defaults
+    // Stringify defaultData to compare with cached defaults to bypass local browser cache automatically when code is updated
+    const currentDefaultStr = JSON.stringify(defaultData);
+    const cachedDefaultStr = localStorage.getItem("gamalia_bday_default_data");
+
     let appData = localStorage.getItem("gamalia_bday_config_v2");
-    if (!appData) {
+    if (!appData || cachedDefaultStr !== currentDefaultStr) {
       localStorage.setItem("gamalia_bday_config_v2", JSON.stringify(defaultData));
+      localStorage.setItem("gamalia_bday_default_data", currentDefaultStr);
       appData = defaultData;
     } else {
       appData = JSON.parse(appData);
@@ -1724,7 +1733,7 @@ Joefany ❤️`,
       card.className = 'polaroid-card';
       const tiltAngle = tilts[idx % tilts.length];
       card.style.setProperty('--tilt', `${tiltAngle}deg`);
-      card.setAttribute('onclick', 'openLightbox(this)');
+      card.setAttribute('onclick', `openSlideshow(${idx})`);
       card.innerHTML = `
         <div class="polaroid-img-wrap">
           <img src="${p.img}" alt="${p.cap}"/>
@@ -1861,10 +1870,20 @@ Joefany ❤️`,
         lockStars.appendChild(star);
         setTimeout(() => star.remove(), dur * 1000 + 100);
       }
-      setInterval(spawnShootingStar, 2500 + Math.random() * 3000);
-      // Spawn a few immediately
+      
+      function scheduleNextStar() {
+        if (document.getElementById('locked-screen').style.display === 'none') return;
+        const delay = 2000 + Math.random() * 4000;
+        setTimeout(() => {
+          spawnShootingStar();
+          scheduleNextStar();
+        }, delay);
+      }
+      
+      // Spawn a few immediately and kick off randomized cycle
       setTimeout(spawnShootingStar, 500);
       setTimeout(spawnShootingStar, 1800);
+      scheduleNextStar();
     })();
 
     // Show Unlock screen overlay transition
@@ -2013,6 +2032,10 @@ Joefany ❤️`,
       counterTriggered = true;
       const targetAge = appData.age;
       const counterVal = document.getElementById('milestone-age-val');
+      if (targetAge <= 0) {
+        counterVal.textContent = 0;
+        return;
+      }
       let current = 0;
       const speed = 2000 / targetAge; // 2 seconds transition
 
@@ -2259,15 +2282,17 @@ Joefany ❤️`,
     function initParallaxScroll() {
       const hero = document.getElementById('sec-hero');
       const parallaxEls = hero.querySelectorAll('[data-parallax]');
-      const heroBg = document.getElementById('hero-background-img');
+      const heroBgWrapper = hero.querySelector('.hero-bg-wrapper');
 
       window.addEventListener('scroll', () => {
         const scrollY = window.scrollY;
         const heroH = hero.offsetHeight;
         if (scrollY > heroH) return; // Only apply in hero viewport
 
-        // Background parallax (slower)
-        heroBg.style.transform = `scale(${1 + scrollY * 0.0003}) translateY(${scrollY * 0.25}px)`;
+        // Background parallax applied to outer wrapper so kenBurns CSS zoom remains uninterrupted inside
+        if (heroBgWrapper) {
+          heroBgWrapper.style.transform = `translateY(${scrollY * 0.25}px)`;
+        }
 
         // Content elements parallax
         parallaxEls.forEach(el => {
