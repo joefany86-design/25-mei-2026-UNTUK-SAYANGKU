@@ -1604,6 +1604,33 @@ Joefany ❤️`,
       html5: true
     });
 
+    // Set initial active track
+    activeTrack = track1;
+
+    // Direct immediate autoplay attempt on load
+    track1.once('load', () => {
+      track1.play();
+      track1.fade(0, 0.4, 1500);
+      document.getElementById('music-waves').classList.remove('music-paused');
+      const playBtn = document.querySelector('.play-pause-btn');
+      if (playBtn) playBtn.textContent = '⏸';
+    });
+
+    // Fallback global listener to instantly trigger audio on the very first touch/tap anywhere
+    function forceAutoplayOnGesture() {
+      if (track1 && !track1.playing()) {
+        track1.play();
+        track1.fade(0, 0.4, 1500);
+        document.getElementById('music-waves').classList.remove('music-paused');
+        const playBtn = document.querySelector('.play-pause-btn');
+        if (playBtn) playBtn.textContent = '⏸';
+      }
+      document.removeEventListener('click', forceAutoplayOnGesture);
+      document.removeEventListener('touchstart', forceAutoplayOnGesture);
+    }
+    document.addEventListener('click', forceAutoplayOnGesture, { passive: true });
+    document.addEventListener('touchstart', forceAutoplayOnGesture, { passive: true });
+
     function toggleMusic() {
       const waves = document.getElementById('music-waves');
       const btn = document.querySelector('.play-pause-btn');
@@ -1698,10 +1725,13 @@ Joefany ❤️`,
 
       // Autoplay track 1 lofi with initial volume crossfade to 0.4
       activeTrack = track1;
-      track1.play();
-      track1.fade(0, 0.4, 1500);
-      document.getElementById('music-waves').classList.remove('music-paused');
-      document.querySelector('.play-pause-btn').textContent = '⏸';
+      if (!track1.playing()) {
+        track1.play();
+        track1.fade(0, 0.4, 1500);
+        document.getElementById('music-waves').classList.remove('music-paused');
+        const playBtn = document.querySelector('.play-pause-btn');
+        if (playBtn) playBtn.textContent = '⏸';
+      }
 
       // Launch dynamic confetti burst
       burstConfetti(140);
